@@ -122,7 +122,7 @@ namespace Common.Data.UnitTests
 
 			// Assert
 			await a.Should().ThrowAsync<Exception>();
-			s.RetryCount.Should().Be(1);
+			s.RetryCount.Should().Be(retryCount + 1);
 		}
 
 		[Fact]
