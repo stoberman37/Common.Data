@@ -82,7 +82,7 @@ namespace Common.Data
 		/// <param name="isolationLevel">transaction isolation level</param>
 		/// <typeparam name="T">Type of the object be returnes</typeparam>
 		/// <returns>query results</returns>
-		IEnumerable<T> ExecuteQuery<T>(CancellationToken cancellationToken = default, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+		IEnumerable<T> ExecuteQuery<T>(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		///     Execute the query, returning a collection of type TReturn
@@ -93,8 +93,8 @@ namespace Common.Data
 		/// <param name="isolationLevel">transaction isolation level</param>
 		/// <returns></returns>
 		IEnumerable<TReturn> ExecuteQuery<TConcrete, TReturn>(
-			CancellationToken cancellationToken = default,
-			IsolationLevel isolationLevel = IsolationLevel.ReadCommitted) where TConcrete : TReturn;
+			IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
+			CancellationToken cancellationToken = default) where TConcrete : TReturn;
 
 		/// <summary>
 		///     Execute a non-result query
@@ -102,7 +102,7 @@ namespace Common.Data
 		/// <param name="cancellationToken">cancellation token</param>
 		/// <param name="isolationLevel">transaction isolation level</param>
 		/// <returns>return value from the query</returns>
-		int ExecuteNonQuery(CancellationToken cancellationToken = default, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+		int ExecuteNonQuery(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		///     Execute the query asynchronously
@@ -111,7 +111,7 @@ namespace Common.Data
 		/// <param name="isolationLevel">transaction isolation level</param>
 		/// <typeparam name="T">Type of return object</typeparam>
 		/// <returns>awaitable query results</returns>
-		Task<IEnumerable<T>> ExecuteQueryAsync<T>(CancellationToken cancellationToken = default, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+		Task<IEnumerable<T>> ExecuteQueryAsync<T>(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		///     Execute the query asynchronously, returning a collection of type TReturn
@@ -122,7 +122,7 @@ namespace Common.Data
 		/// <param name="isolationLevel">transaction isolation level</param>
 		/// <returns></returns>
 		Task<IEnumerable<TReturn>> ExecuteQueryAsync<TConcrete, TReturn>(
-			CancellationToken cancellationToken = default, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+			IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default)
 			where TConcrete : TReturn;
 
 		/// <summary>
@@ -131,6 +131,6 @@ namespace Common.Data
 		/// <param name="cancellationToken">task cancellation token</param>
 		/// <param name="isolationLevel">transaction isolation level</param>
 		/// <returns>awaitable return value from the query</returns>
-		Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken = default, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+		Task<int> ExecuteNonQueryAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
 	}
 }

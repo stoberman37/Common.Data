@@ -2,38 +2,42 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net8.0</TargetFrameworks>
-	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 	  <Deterministic>true</Deterministic>
+	  <IsPackable>true</IsPackable>
 	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	  <PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<IncludeSymbols>true</IncludeSymbols>
+	  <IncludeSymbols>true</IncludeSymbols>
 	  <EmbedUntrackedSources>true</EmbedUntrackedSources>
-	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>  
-  </PropertyGroup>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Common.Data</PackageId>
+		<PackageId>Common.Data.Dapper</PackageId>
 		<Version>0.0.0</Version>
 		<Authors>Scott Toberman</Authors>
 		<Copyright>Copyright (c) 2024 Scott Toberman</Copyright>
-		<PackageTags>SQL,Repository</PackageTags>
+		<PackageTags>SQL,Repository,Dapper</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/stoberman37/Common.Data/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/stoberman37/Common.Data/</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<Description>
-			A library that enables clean and simple modeling of database access
-			for a myriad of data stores. It provides wide compatibility with .NET 8 and higher,
-			and .NET Standard 2.1.
+			A library that provides a Dapper database client for Common.Data.
 		</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Data\Common.Data.csproj" />
   </ItemGroup>
 
 </Project>
