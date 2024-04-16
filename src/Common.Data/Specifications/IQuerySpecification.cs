@@ -8,7 +8,13 @@ namespace Common.Data.Specifications
 {
 	public interface IQuerySpecification<in TClient, T>
 	{
-		Func<TClient, Task<IEnumerable<T>>> ExecuteFunc();
-		Func<TClient, Task<IEnumerable<T>>> ExecuteFunc(CancellationToken cancellationToken);
+		Func<TClient, IEnumerable<T>> Execute();
+		Func<TClient, IEnumerable<T>> Execute(CancellationToken cancellationToken);
+	}
+
+	public interface IQuerySpecificationAsync<in TClient, T>
+	{
+		Func<TClient, Task<IEnumerable<T>>> ExecuteAsync();
+		Func<TClient, Task<IEnumerable<T>>> ExecuteAsync(CancellationToken cancellationToken);
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace Common.Data.Attributes
 {
-	[AttributeUsage(AttributeTargets.Property)]
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 	public sealed class ColumnAttribute : Attribute
 	{
 		public ColumnAttribute()

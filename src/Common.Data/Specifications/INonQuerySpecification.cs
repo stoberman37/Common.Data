@@ -7,7 +7,13 @@ namespace Common.Data.Specifications
 {
 	public interface INonQuerySpecification<in TClient>
 	{
-		Func<TClient, Task> ExecuteFunc();
-		Func<TClient, Task> ExecuteFunc(CancellationToken cancellationToken);
+		Action<TClient> Execute();
+		Action<TClient> Execute(CancellationToken cancellationToken);
+	}
+
+	public interface INonQuerySpecificationAsync<in TClient>
+	{
+		Func<TClient, Task> ExecuteAsync();
+		Func<TClient, Task> ExecuteAsync(CancellationToken cancellationToken);
 	}
 }

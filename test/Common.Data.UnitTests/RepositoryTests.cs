@@ -12,6 +12,13 @@ using Xunit.Categories;
 #pragma warning disable IDE0062
 namespace Common.Data.UnitTests
 {
+	public class DummyClient : IDisposable
+	{
+		public void Dispose()
+		{
+		}
+	}
+
 	[UnitTest]
 	public class RepositoryTests
 	{
@@ -19,10 +26,10 @@ namespace Common.Data.UnitTests
 		public void ConstructorTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
+			DummyClient Factory() => new();
 
 			// Act
-			var repo = new Repository<IDbClient, object>(Factory);
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Assert
 			repo.Should().NotBeNull();
@@ -32,7 +39,7 @@ namespace Common.Data.UnitTests
 		public void ConstructorWithNullFactoryTest()
 		{
 			// Arrange & Act
-			var a = () => new Repository<IDbClient, object>(null);
+			var a = () => new Repository<DummyClient, object>(null);
 
 			// Assert
 			a.Should()
@@ -44,11 +51,11 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncActionNullTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
+			DummyClient Factory() => new();
 
 			// Act
-			var repo = new Repository<IDbClient, object>(Factory);
-			var a = () => repo.ExecuteDbActionAsync(null as Func<IDbClient, Task<IEnumerable<object>>>);
+			var repo = new Repository<DummyClient, object>(Factory);
+			var a = () => repo.ExecuteDbActionAsync(null as Func<DummyClient, Task<IEnumerable<object>>>);
 
 			// Assert
 			await a.Should()
@@ -60,11 +67,11 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncNullTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
+			DummyClient Factory() => new();
 
 			// Act
-			var repo = new Repository<IDbClient, object>(Factory);
-			var a = ()=> repo.ExecuteDbActionAsync((Func<IDbClient, Task>)null);
+			var repo = new Repository<DummyClient, object>(Factory);
+			var a = ()=> repo.ExecuteDbActionAsync((Func<DummyClient, Task>)null);
 
 			// Assert
 			await a.Should()
@@ -76,11 +83,11 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			Task Task(IDbClient c) => System.Threading.Tasks.Task.FromResult(true);
+			DummyClient Factory() => new();
+			Task Task(DummyClient c) => System.Threading.Tasks.Task.FromResult(true);
 
 			// Act
-			var repo = new Repository<IDbClient, object>(Factory);
+			var repo = new Repository<DummyClient, object>(Factory);
 			var a = () => repo.ExecuteDbActionAsync(Task);
 			
 
@@ -93,11 +100,11 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncActionWithReturnNullTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
-			var a = () => repo.ExecuteDbActionAsync(null as Func<IDbClient, Task<IEnumerable<object>>>);
+			var a = () => repo.ExecuteDbActionAsync(null as Func<DummyClient, Task<IEnumerable<object>>>);
 
 			// Assert
 			await a.Should()
@@ -109,10 +116,10 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncWithReturnTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			Task<IEnumerable<object>> DbAction(IDbClient c) =>
+			DummyClient Factory() => new();
+			Task<IEnumerable<object>> DbAction(DummyClient c) =>
 				Task.FromResult(new List<object>() as IEnumerable<object>);
-			var repo = new Repository<IDbClient, object>(Factory);
+			var repo = new Repository<DummyClient, object>(Factory);
 
 
 			// Act
@@ -127,11 +134,11 @@ namespace Common.Data.UnitTests
 		public void ExecuteDbActionActionNullTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
-			var a = () => repo.ExecuteDbAction((Action<IDbClient>) null);
+			var a = () => repo.ExecuteDbAction((Action<DummyClient>) null);
 
 			// Assert
 			a.Should()
@@ -143,14 +150,14 @@ namespace Common.Data.UnitTests
 		public void ExecuteDbActionTest()
 		{
 			// Arrange
-			var repo = new Repository<IDbClient, object>(Factory);
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			void Func(IDbClient c)
+			var repo = new Repository<DummyClient, object>(Factory);
+			DummyClient Factory() => new();
+			void Func(DummyClient c)
 			{
 			}
 
 			// Act
-			var a = () => repo.ExecuteDbAction((Action<IDbClient>) Func);
+			var a = () => repo.ExecuteDbAction(Func);
 
 			// Assert
 			a.Should().NotThrow<Exception>();
@@ -160,11 +167,11 @@ namespace Common.Data.UnitTests
 		public void ExecuteDbActionActionWithReturnNullTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
-			var a = () => repo.ExecuteDbAction(null);
+			var a = () => repo.ExecuteDbAction(null as Action<DummyClient>);
 
 			// Assert
 			a.Should()
@@ -176,9 +183,9 @@ namespace Common.Data.UnitTests
 		public void ExecuteDbActionWithReturnTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			IEnumerable<object> DbAction(IDbClient c) => new List<object>();
-			var repo = new Repository<IDbClient, object>(Factory);
+			DummyClient Factory() => new Mock<DummyClient>().Object;
+			IEnumerable<object> DbAction(DummyClient c) => new List<object>();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
 			var result = repo.ExecuteDbAction(DbAction);
@@ -191,11 +198,11 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncWithNonQuerySpecificationNullTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
-			var a = () => repo.ExecuteDbActionAsync(null as INonQuerySpecification<IDbClient>);
+			var a = () => repo.ExecuteDbActionAsync(null as INonQuerySpecificationAsync<DummyClient>);
 
 			// Assert
 			await a.Should()
@@ -207,11 +214,11 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncWithNonQuerySpecificationAndCancellationNullTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
-			var a = () => repo.ExecuteDbActionAsync(null as INonQuerySpecification<IDbClient>, new CancellationToken());
+			var a = () => repo.ExecuteDbActionAsync(null as INonQuerySpecificationAsync<DummyClient>, new CancellationToken());
 
 			// Assert
 			await a.Should()
@@ -223,48 +230,48 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncWithNonQuerySpecificationTest()
 		{
 			// Arrange
-			var spec = new Mock<INonQuerySpecification<IDbClient>>();
-			Task Task(IDbClient c) => System.Threading.Tasks.Task.FromResult(true);
-			spec.Setup(s => s.ExecuteFunc()).Returns(Task);
-			spec.Setup(s => s.ExecuteFunc(It.IsAny<CancellationToken>())).Returns(Task);
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			var spec = new Mock<INonQuerySpecificationAsync<DummyClient>>();
+			Task Task(DummyClient c) => System.Threading.Tasks.Task.FromResult(true);
+			spec.Setup(s => s.ExecuteAsync()).Returns(Task);
+			spec.Setup(s => s.ExecuteAsync(It.IsAny<CancellationToken>())).Returns(Task);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
 			await repo.ExecuteDbActionAsync(spec.Object);
 
 			// Assert
-			spec.Verify(s => s.ExecuteFunc(It.IsAny<CancellationToken>()), Times.Once);
+			spec.Verify(s => s.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Once);
 		}
 
 		[Fact]
 		public async Task ExecuteDbActionAsyncWithNonQuerySpecificationAndCancellationTokenTest()
 		{
 			// Arrange
-			var spec = new Mock<INonQuerySpecification<IDbClient>>();
-			Task Task(IDbClient c) => System.Threading.Tasks.Task.FromResult(true);
-			spec.Setup(s => s.ExecuteFunc()).Returns(Task);
-			spec.Setup(s => s.ExecuteFunc(It.IsAny<CancellationToken>())).Returns(Task);
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			var spec = new Mock<INonQuerySpecificationAsync<DummyClient>>();
+			Task Task(DummyClient c) => System.Threading.Tasks.Task.FromResult(true);
+			spec.Setup(s => s.ExecuteAsync()).Returns(Task);
+			spec.Setup(s => s.ExecuteAsync(It.IsAny<CancellationToken>())).Returns(Task);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 			var cancelToken = new CancellationToken();
 
 			// Act
 			await repo.ExecuteDbActionAsync(spec.Object, cancelToken);
 
 			// Assert
-			spec.Verify(s => s.ExecuteFunc(It.IsAny<CancellationToken>()), Times.Once);
+			spec.Verify(s => s.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Once);
 		}
 
 		[Fact]
 		public async Task ExecuteDbActionAsyncWithQuerySpecificationNullTest()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
-			var a = () => repo.ExecuteDbActionAsync(null as IQuerySpecification<IDbClient, object>);
+			var a = () => repo.ExecuteDbActionAsync(null as IQuerySpecificationAsync<DummyClient, object>);
 
 			// Assert
 			await a.Should()
@@ -276,11 +283,11 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncWithQuerySpecificationAndCancellationNullTests()
 		{
 			// Arrange
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
-			var a = () => repo.ExecuteDbActionAsync(null as IQuerySpecification<IDbClient, object>, new CancellationToken());
+			var a = () => repo.ExecuteDbActionAsync(null as IQuerySpecificationAsync<DummyClient, object>, new CancellationToken());
 
 			// Assert
 			await a.Should()
@@ -292,40 +299,40 @@ namespace Common.Data.UnitTests
 		public async Task ExecuteDbActionAsyncWithQuerySpecificationTest()
 		{
 			// Arrange
-			var spec = new Mock<IQuerySpecification<IDbClient, object>>();
+			var spec = new Mock<IQuerySpecificationAsync<DummyClient, object>>();
 
-			Task<IEnumerable<object>> DbAction(IDbClient c) =>
+			Task<IEnumerable<object>> DbAction(DummyClient c) =>
 				Task.FromResult(new List<object>() as IEnumerable<object>);
-			spec.Setup(s => s.ExecuteFunc()).Returns(DbAction);
-			spec.Setup(s => s.ExecuteFunc(It.IsAny<CancellationToken>())).Returns(DbAction);
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			spec.Setup(s => s.ExecuteAsync()).Returns(DbAction);
+			spec.Setup(s => s.ExecuteAsync(It.IsAny<CancellationToken>())).Returns(DbAction);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 
 			// Act
 			await repo.ExecuteDbActionAsync(spec.Object);
 
 			// Assert
-			spec.Verify(s => s.ExecuteFunc(It.IsAny<CancellationToken>()), Times.Once);
+			spec.Verify(s => s.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Once);
 		}
 
 		[Fact]
 		public async Task ExecuteDbActionAsyncWithQuerySpecificationAndCancellationTokenTest()
 		{
 			// Arrange
-			var spec = new Mock<INonQuerySpecification<IDbClient>>();
-			Task<IEnumerable<object>> DbAction(IDbClient c) =>
+			var spec = new Mock<INonQuerySpecificationAsync<DummyClient>>();
+			Task<IEnumerable<object>> DbAction(DummyClient c) =>
 				Task.FromResult(new List<object>() as IEnumerable<object>);
-			spec.Setup(s => s.ExecuteFunc()).Returns(DbAction);
-			spec.Setup(s => s.ExecuteFunc(It.IsAny<CancellationToken>())).Returns(DbAction);
-			IDbClient Factory() => new Mock<IDbClient>().Object;
-			var repo = new Repository<IDbClient, object>(Factory);
+			spec.Setup(s => s.ExecuteAsync()).Returns(DbAction);
+			spec.Setup(s => s.ExecuteAsync(It.IsAny<CancellationToken>())).Returns(DbAction);
+			DummyClient Factory() => new();
+			var repo = new Repository<DummyClient, object>(Factory);
 			var cancelToken = new CancellationToken();
 
 			// Act
 			await repo.ExecuteDbActionAsync(spec.Object, cancelToken);
 
 			// Assert
-			spec.Verify(s => s.ExecuteFunc(It.IsAny<CancellationToken>()), Times.Once);
+			spec.Verify(s => s.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Once);
 		}
 	}
 }

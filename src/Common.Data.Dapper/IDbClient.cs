@@ -80,7 +80,7 @@ namespace Common.Data
 		/// </summary>
 		/// <param name="cancellationToken">task cancellation token</param>
 		/// <param name="isolationLevel">transaction isolation level</param>
-		/// <typeparam name="T">Type of the object be returnes</typeparam>
+		/// <typeparam name="T">Type of the object be returns</typeparam>
 		/// <returns>query results</returns>
 		IEnumerable<T> ExecuteQuery<T>(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
 

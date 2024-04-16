@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
@@ -125,7 +126,7 @@ namespace Common.Data
                 PushCommand();
             if (_commands.Count > 1) throw new DbClientException("ExecuteQuery only supports a single command");
 
-            try
+			try
             {
                 return _retryStrategy.Retry(() =>
                 {
@@ -221,31 +222,28 @@ namespace Common.Data
             {
                 var output = await _retryStrategy.RetryAsync(async () =>
                 {
-                    using (var conn = _connectionFactory.Invoke())
-                    {
-                        IEnumerable<T> results;
-                        await conn.OpenAsync(cancellationToken).ConfigureAwait(false);
-                        var transaction = await conn.BeginTransactionAsync(isolationLevel, cancellationToken);
-                        var cmd = new CommandDefinition(_commands[0].CommandText,
-                            _commands[0].Parameters,
-                            transaction,
-                            _commands[0].CommandTimeout,
-                            _commands[0].CommandType);
-                        try
-                        {
-                            results = await conn.QueryAsync<T>(cmd).ConfigureAwait(false);
-                            ParameterManager.ExtractOutputParameters(_commands[0].Parameters);
-                            await transaction.CommitAsync(cancellationToken);
-                        }
-                        catch
-                        {
-                            await transaction?.RollbackAsync(cancellationToken);
-                            throw;
-                        }
-
-                        return results;
-                    }
-                }, cancellationToken).ConfigureAwait(false);
+					await using var conn = _connectionFactory.Invoke();
+					IEnumerable<T> results;
+					await conn.OpenAsync(cancellationToken).ConfigureAwait(false);
+					var transaction = await conn.BeginTransactionAsync(isolationLevel, cancellationToken);
+					var cmd = new CommandDefinition(_commands[0].CommandText,
+						_commands[0].Parameters,
+						transaction,
+						_commands[0].CommandTimeout,
+						_commands[0].CommandType);
+					try
+					{
+						results = await conn.QueryAsync<T>(cmd).ConfigureAwait(false);
+						ParameterManager.ExtractOutputParameters(_commands[0].Parameters);
+						await transaction.CommitAsync(cancellationToken);
+					}
+					catch
+					{
+						await transaction.RollbackAsync(cancellationToken)!;
+						throw;
+					}
+					return results;
+				}, cancellationToken).ConfigureAwait(false);
                 return output;
             }
             finally
@@ -257,8 +255,8 @@ namespace Common.Data
         public async Task<IEnumerable<TReturn>> ExecuteQueryAsync<TConcrete, TReturn>(
             IsolationLevel isolationLevel, CancellationToken cancellationToken) where TConcrete : TReturn
         {
-            var result = await ExecuteQueryAsync<TConcrete>(isolationLevel, cancellationToken).ConfigureAwait(false);
-            return result.Select(s => s).Cast<TReturn>();
+	        var result = await ExecuteQueryAsync<TConcrete>(isolationLevel, cancellationToken);
+	        return result.Cast<TReturn>();
         }
 
         public async Task<int> ExecuteNonQueryAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken)
@@ -289,7 +287,7 @@ namespace Common.Data
 						}
 						catch
 						{
-							await transaction?.RollbackAsync(cancellationToken);
+							await transaction.RollbackAsync(cancellationToken)!;
 							throw;
 						}
 					}
