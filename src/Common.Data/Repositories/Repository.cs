@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Data.Specifications;
-using static System.Collections.Specialized.BitVector32;
 
 // ReSharper disable once CheckNamespace
 namespace Common.Data.Repositories

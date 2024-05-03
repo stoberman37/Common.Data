@@ -8,13 +8,18 @@ namespace Common.Data
 	{
 		private readonly Func<RetryStrategyBase<TException>, TException, bool> _continueFunc;
 
-		public RetryStrategyBase(Func<RetryStrategyBase<TException>, TException, bool> continueFunc)
+		protected RetryStrategyBase(Func<RetryStrategyBase<TException>, TException, bool> continueFunc) 
+			: this(continueFunc, DefaultRetryCount)
+		{
+		}
+		protected RetryStrategyBase(Func<RetryStrategyBase<TException>, TException, bool> continueFunc, int maxRetryCount)
 		{
 			_continueFunc = continueFunc ?? throw new ArgumentNullException(nameof(continueFunc));
+			MaxRetryCount = maxRetryCount;
 		}
 
 		private const int DefaultRetryCount = 0;
-		public int MaxRetryCount { get; private set; } = DefaultRetryCount;
+		public int MaxRetryCount { get; private set; }
 		public int RetryCount { get; private set; }
 
 		public T Retry<T>(Func<T> func)

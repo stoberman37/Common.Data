@@ -12,24 +12,31 @@ using Common.Data.Example;
 using Common.Data.Repositories;
 using Common.Data.Specifications;
 using Common.Data.SqlServer;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using Common.Data.Elasticsearch;
+using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.QueryDsl;
 
 
 Console.WriteLine("Hello World!");
 
-
-//serviceCollection.AddColumnMapper(typeof(DbModel), true);
-//Dapper.SqlMapper.SetTypeMap(
-//	typeof(DbModel),
-//	new ColumnAttributeTypeMapper<DbModel>());
-
 var connectionString = @"Server=(localdb)\mydb;Database=master;Trusted_Connection=True;";
 SqlConnection ConnectionFactory() => new(connectionString);
 var clientRepo = new Repository<IDbClient, DbModel>(() => new SqlServerDbClient(ConnectionFactory));
-clientRepo.AddColumnMapper(true);
+Dapper.SqlMapper.SetTypeMap(typeof(DbModel),
+	new ColumnAttributeTypeMapper<DbModel>(false));
+
 
 var clientSpec = new GetDatabaseSpec("master");
 var model = clientRepo.ExecuteDbAction(clientSpec).FirstOrDefault();
+model = (await clientRepo.ExecuteDbActionAsync(clientSpec)).FirstOrDefault();
+
 Console.WriteLine($"Id: {model.Id}, Name: {model.DbName}");
+
+//var elasticRepo = new Repository<CommonElasticsearchClient, DbModel>(() => new CommonElasticsearchClient(() => new ElasticsearchClient()));
+//var search = new SearchContractSpec();
+//var result = await elasticRepo.ExecuteDbActionAsync(search);
 
 namespace Common.Data.Example
 {
@@ -41,7 +48,29 @@ namespace Common.Data.Example
 		public int Id { get; set; }
 	}
 
-	public class GetDatabaseSpec(string dbName) : IQuerySpecification<IDbClient, DbModel>
+	public class SearchContractSpec : IQuerySpecificationAsync<CommonElasticsearchClient, DbModel>
+	{
+		private SearchRequest<DbModel> _search;
+		public SearchContractSpec(string index, int from, int size, string user, string value)
+		{
+			_search = new SearchRequest<DbModel>(index)
+			{
+				From = from,
+				Size = size,
+				Query = new TermQuery(user) { Value = value }
+			};
+		}
+
+		public Func<CommonElasticsearchClient, Task<IEnumerable<DbModel>>> ExecuteAsync() =>
+			ExecuteAsync(new CancellationToken());
+
+		public Func<CommonElasticsearchClient, Task<IEnumerable<DbModel>>> ExecuteAsync(CancellationToken cancellationToken)
+		{
+			return wrapper => wrapper.SearchAsync(_search, cancellationToken);
+		}
+	}
+
+	public class GetDatabaseSpec(string dbName) : IQuerySpecification<IDbClient, DbModel>, IQuerySpecificationAsync<IDbClient, DbModel>
 	{
 		private readonly string _dbName = dbName ?? throw new ArgumentNullException(nameof(dbName));
 
@@ -55,6 +84,19 @@ namespace Common.Data.Example
 					.AddNamedParameters(new { name = _dbName })
 					.SetCommandTimeout(30)
 					.ExecuteQuery<DbModel>(cancellationToken: cancellationToken);
+		}
+
+		public Func<IDbClient, Task<IEnumerable<DbModel>>> ExecuteAsync() => ExecuteAsync(new CancellationToken());
+
+		public Func<IDbClient, Task<IEnumerable<DbModel>>> ExecuteAsync(CancellationToken cancellationToken)
+		{
+			return db =>
+				db.SetCommandText("SELECT database_id, Name from sys.databases WHERE name = @name")
+					.SetCommandType(CommandType.Text)
+					.AddNamedParameters(new { name = _dbName })
+					.SetCommandTimeout(30)
+					.ExecuteQueryAsync<DbModel>(cancellationToken: cancellationToken);
+
 		}
 	}
 	/*

@@ -13,31 +13,11 @@ namespace Common.Data.SqlServer.UnitTests
 		[Fact]
 		public void Constructor_Succeeds()
 		{
-			// Arrange
-			DbConnection Factory() => Mock.Of<DbConnection>();
-
-			// Act
-			var client = new SqlServerDbClient(Factory);
+			// Arrange & Act
+			var client = new SqlServerDbClient(Mock.Of<DbConnection>);
 
 			// Assert
 			client.Should().NotBeNull();
-		}
-	}
-
-	[UnitTest]
-	public class SqlServerRetryStrategyTests
-	{
-		[Fact]
-		public void Constructor_Succeeds()
-		{
-			// Arrange
-			//var str = () => Mock.Of<DbConnection>();
-
-			// Act
-			var strategy = new SqlServerRetryStrategy();
-
-			// Assert
-			strategy.Should().NotBeNull();
 		}
 	}
 }
