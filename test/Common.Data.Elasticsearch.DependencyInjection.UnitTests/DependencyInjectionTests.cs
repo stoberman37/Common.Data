@@ -27,9 +27,13 @@ namespace Common.Data.Elasticsearch.DependencyInjection.UnitTests
 			// Act
 			services.AddElasticsearchRepository<object>(settings);
 			var provider = services.BuildServiceProvider();
+			var elasticsearchClientFunc = provider.GetService<Func<ElasticsearchClient>>();
+			var commonClientFunc = provider.GetService<Func<CommonElasticsearchClient>>();
 			var repo = provider.GetService<IRepository<CommonElasticsearchClient, object>>();
 
 			// Assert
+			elasticsearchClientFunc.Should().NotBeNull();
+			commonClientFunc.Should().NotBeNull();
 			repo.Should().NotBeNull();
 		}
 
@@ -43,6 +47,20 @@ namespace Common.Data.Elasticsearch.DependencyInjection.UnitTests
 			// Assert
 			a.Should().NotBeNull();
 			a.Should().Throw<ArgumentNullException>().WithParameterName("this");
+		}
+
+		[Fact]
+		public void AddElasticsearchRepository_Fails_WithNullRepositoryConfigurationOptions()
+		{
+			// Arrange
+			var services = new ServiceCollection();
+
+			// Act
+			var a = () => services.AddElasticsearchRepository<object>(null);
+
+			// Assert
+			a.Should().Throw<ArgumentNullException>()
+				.WithParameterName("options");
 		}
 
 		[Fact]

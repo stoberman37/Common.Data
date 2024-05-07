@@ -15,11 +15,13 @@ namespace Common.Data.Elasticsearch.DependencyInjection.UnitTests
 		{
 			// Arrange & Act
 			var options = new RepositoryConfigurationOptions();
+			var retry = options.RetryStrategy();
 
 			// Assert
 			options.Should().NotBeNull();
 			options.ElasticsearchClientSettings.Should().BeNull();
 			options.RetryStrategy.Should().NotBeNull();
+			retry.Should().BeOfType<RetryStrategyByCount>().Which.MaxRetryCount.Should().Be(0);
 		}
 
 		[Theory]

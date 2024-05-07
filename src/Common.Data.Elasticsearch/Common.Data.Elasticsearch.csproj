@@ -28,7 +28,7 @@
 		</Description>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Elastic.Clients.Elasticsearch" Version="8.13.11" />
+		<PackageReference Include="Elastic.Clients.Elasticsearch" Version="8.13.12" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

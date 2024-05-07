@@ -61,20 +61,21 @@ namespace Common.Data.Dapper.DependencyInjection.UnitTests
 		{
 			// Arrange
 			var services = new ServiceCollection();
-			Func<DbClient<Exception>> clientFactory = () => new DbClient<Exception>(Mock.Of<DbConnection>, Mock.Of<IRetryStrategy>());
 			var options = new RepositoryConfigurationOptions<DbClient<Exception>>()
 			{
 				CaseSensitiveColumnMapping = true,
 				ClientFactory = () => new DbClient<Exception>(Mock.Of<DbConnection>, Mock.Of<IRetryStrategy>())
-		};
+			};
 
 			// Act
 			services.AddDapperRepository<DbClient<Exception>, object>(options);
 			var provider = services.BuildServiceProvider();
+			var clientFactory = provider.GetService<Func<DbClient<Exception>>>();
 			var repo = provider.GetService<IRepository<DbClient<Exception>, object>>();
 
 			// Assert
 			repo.Should().NotBeNull();
+			clientFactory.Should().NotBeNull();
 		}
 
 		[Fact]
@@ -93,6 +94,23 @@ namespace Common.Data.Dapper.DependencyInjection.UnitTests
 
 			// Assert
 			a.Should().Throw<ArgumentException>()
+				.WithParameterName("options");
+		}
+
+		[Fact]
+		public void AddDapperRepository_WithOptions_Fails_WithNullOptions()
+		{
+			// Arrange
+			var services = new ServiceCollection();
+			Func<DbClient<Exception>> clientFactory = () => new DbClient<Exception>(Mock.Of<DbConnection>, Mock.Of<IRetryStrategy>());
+
+			// Act
+			var a = () =>
+				services.AddDapperRepository<DbClient<Exception>, object>(
+					null as RepositoryConfigurationOptions<DbClient<Exception>>);
+
+			// Assert
+			a.Should().Throw<ArgumentNullException>()
 				.WithParameterName("options");
 		}
 	}

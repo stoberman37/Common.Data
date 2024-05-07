@@ -186,8 +186,15 @@ namespace Common.Data.SqlServer.UnitTests
 					source.Cancel();
 				}
 
-				throw new Exception("This failed the first time");
+				throw CreateSqlException(-12, "This failed the first time");
 			}
+
+			// Act
+			var a = () => s.Retry(Action, source.Token);
+
+			// Assert
+			a.Should().Throw<OperationCanceledException>();
+			s.RetryCount.Should().Be(1);
 		}
 
 		#endregion
