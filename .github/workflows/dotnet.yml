@@ -16,19 +16,49 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      MAJOR_VERSION: 0
+      MINOR_VERSION: 1
+#       project: MaximGorbatyuk.DatabaseSqlEndpoints
+#       PROJECT_FOLDER: ./MaximGorbatyuk.DatabaseSqlEndpoints
+#       PROJECT_FILE: MaximGorbatyuk.DatabaseSqlEndpoints/MaximGorbatyuk.DatabaseSqlEndpoints.csproj
+#       NUGET_PKG_LINK: https://nuget.pkg.github.com/maximgorbatyuk/index.json
+
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
+    - name: Set version
+      run: |
+       echo "Buid version is ${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{github.run_number}}"
+       find . -name "*.csproj" -exec sed -i "s/<Version>[0-9]\+\.[0-9]\+\.[0-9]\+/<Version>${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{github.run_number}}/g" {} +
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release
+
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --configuration Release --verbosity normal
+
+    - name: Pack
+      working-directory: ${{env.PROJECT_FOLDER}}
+      run: dotnet pack --configuration Release --no-build --output .
+
+#     - name: Publish nuget package
+#       uses: brandedoutcast/publish-nuget@v2.5.2
+#       with:
+#           PROJECT_FILE_PATH: ${{env.PROJECT_FILE}}
+#           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
 
 
 # name: Publish nuget
