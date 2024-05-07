@@ -1,34 +1,46 @@
-﻿
-using System;
-using System.Reflection;
+﻿using System;
 using FluentAssertions;
-using Moq;
 using Xunit;
 using Xunit.Categories;
 
 namespace Common.Data.UnitTests
 {
-
-#pragma warning disable IDE0062
 	[UnitTest]
 	public class RetryStrategyBaseTests
 	{
-		[Fact]
-		public void ConstructorTests()
+		private class NullTestStrategy : RetryStrategyBase<Exception>
 		{
-			// Arrange
-			bool ContinueFunc(RetryStrategyBase<Exception> r, Exception e) => false;
+			public NullTestStrategy() : base(null)
+			{
+			}
+		}
+		private class TestStrategy : RetryStrategyBase<Exception>
+		{
+			public TestStrategy() : base((s, ex) => true)
+			{
+			}
+		}
 
-			// Act
-			var success =
-				new Mock<RetryStrategyBase<Exception>>(
-					(Func<RetryStrategyBase<Exception>, Exception, bool>) ContinueFunc);
-			var a = () => new Mock<RetryStrategyBase<Exception>>(null).Object;
+		[Fact]
+		public void Constructor_Succeeds()
+		{
+			// Arrange &  Act
+			var s = new TestStrategy();
+
+
+			// Assert
+			s.Should().NotBeNull();
+		}
+
+		[Fact]
+		public void Constructor_ThrowsException_WithNullContinueFunc()
+		{
+			// Arrange & Act
+			var a = () => new NullTestStrategy();
 
 			// Assert
 			a.Should()
-				.Throw<TargetInvocationException>()
-				.WithInnerException<ArgumentNullException>()
+				.Throw<ArgumentNullException>()
 				.WithParameterName("continueFunc");
 		}
 	}
