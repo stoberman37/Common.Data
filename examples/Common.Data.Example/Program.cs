@@ -104,7 +104,7 @@ namespace Common.Data.Example
 	\":index\":{\"S\":\"{ \\\"ipaddress\\\": \\\"1.1.1.2\\\", \\\"created_date\\\": \\\"1639000000\\\" }\"}}"
 	--expression-attribute-names "{\"#uuid\": \"uuid\", \"#index\": \"index\"}" --limit 1
 	*/
-	//	public class JerrysQuerySpec : IQuerySpecification<IDynamoDbClient, JerryModel>
+	//	public class JerrysQuerySpec : IQuerySpecification<IDynamoDBClient, JerryModel>
 	//	{
 	//		private readonly string _uuid;
 	//		private readonly string _index;
@@ -114,7 +114,7 @@ namespace Common.Data.Example
 	//			_index = index;
 	//		}
 
-	//		public Func<IDynamoDbClient, Task<JerryModel>> ExecuteFunc()
+	//		public Func<IDynamoDBClient, Task<JerryModel>> ExecuteFunc()
 	//		{
 	//			var command = $"attribute-values "{\":uuid\":{\"S\":\"{ \\\"vin\\\": \\\"ABCDEF0123456GHIJK\\\" }\"},
 	//\":index\":{\"S\":\"{ \\\"ipaddress\\\": \\\"1.1.1.2\\\", \\\"created_date\\\": \\\"1639000000\\\" }\"}}" 
