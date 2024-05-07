@@ -24,9 +24,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Data.Dapper", "src\C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Data.Dapper.UnitTests", "test\Common.Data.Dapper.UnitTests\Common.Data.Dapper.UnitTests.csproj", "{AB48820B-528C-4C7C-9C96-6D2739482211}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Data.SqlServer", "src\Common.Data.SqlServer\Common.Data.SqlServer.csproj", "{950A2F0D-E3DA-4AC6-B4DC-B613784E4BE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Data.Dapper.SqlServer", "src\Common.Data.Dapper.SqlServer\Common.Data.Dapper.SqlServer.csproj", "{950A2F0D-E3DA-4AC6-B4DC-B613784E4BE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Data.SqlServer.UnitTests", "test\Common.Data.SqlServer.UnitTests\Common.Data.SqlServer.UnitTests.csproj", "{3865EAF2-4203-4C3F-854B-E2C8B41C31A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Data.Dapper.SqlServer.UnitTests", "test\Common.Data.Dapper.SqlServer.UnitTests\Common.Data.Dapper.SqlServer.UnitTests.csproj", "{3865EAF2-4203-4C3F-854B-E2C8B41C31A5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Data.Example", "examples\Common.Data.Example\Common.Data.Example.csproj", "{BAA3BC05-F23A-4186-A3CC-3FA128071815}"
 EndProject

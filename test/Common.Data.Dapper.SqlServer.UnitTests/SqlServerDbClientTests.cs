@@ -5,7 +5,7 @@ using Xunit.Categories;
 using FluentAssertions;
 using Moq;
 
-namespace Common.Data.SqlServer.UnitTests
+namespace Common.Data.Dapper.SqlServer.UnitTests
 {
 	[UnitTest]
 	public class SqlServerDbClientTests

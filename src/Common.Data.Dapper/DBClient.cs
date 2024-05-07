@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 
 // ReSharper disable once CheckNamespace
-namespace Common.Data
+namespace Common.Data.Dapper
 {
 	public class DbClient<TException> : IDbClient where TException : Exception
 	{

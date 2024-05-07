@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Data.Common;
 using Common.Data.Repositories;
 using Microsoft.Extensions.DependencyInjection;
-using static Dapper.SqlMapper;
 using D = Dapper;
 
 // ReSharper disable once CheckNamespace

@@ -12,7 +12,7 @@ namespace Common.Data.Dapper.UnitTests
 		public void DefaultConstructorTest()
 		{
 			// Arrange
-			const string defaultMessage = "Exception of type 'Common.Data.DbClientException' was thrown.";
+			const string defaultMessage = "Exception of type 'Common.Data.Dapper.DbClientException' was thrown.";
 			// Act
 			var ex = new DbClientException();
 

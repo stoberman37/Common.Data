@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
-namespace Common.Data
+namespace Common.Data.Dapper
 {
 	/// <summary>
 	/// DbClient interface

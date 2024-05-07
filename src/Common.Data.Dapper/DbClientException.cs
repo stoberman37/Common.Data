@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 // ReSharper disable once CheckNamespace
-namespace Common.Data
+namespace Common.Data.Dapper
 {
     [Serializable]
     public class DbClientException : Exception

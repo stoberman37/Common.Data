@@ -10,7 +10,7 @@ using Xunit;
 using Xunit.Categories;
 
 #pragma warning disable IDE0062
-namespace Common.Data.SqlServer.UnitTests
+namespace Common.Data.Dapper.SqlServer.UnitTests
 {
 	[UnitTest]
 	public class SqlServerRetryStrategyTests

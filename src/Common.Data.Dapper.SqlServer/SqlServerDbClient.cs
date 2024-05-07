@@ -2,7 +2,7 @@
 using System.Data.Common;
 using System.Data.SqlClient;
 
-namespace Common.Data.SqlServer
+namespace Common.Data.Dapper.SqlServer
 {
     public class SqlServerDbClient : DbClient<SqlException>
     {

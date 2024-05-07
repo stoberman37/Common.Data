@@ -13,7 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Common.Data.Dapper.DependencyInjection\Common.Data.Dapper.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\src\Common.Data.Elasticsearch\Common.Data.Elasticsearch.csproj" />
-    <ProjectReference Include="..\..\src\Common.Data.SqlServer\Common.Data.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\Common.Data.Dapper.SqlServer\Common.Data.Dapper.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>
