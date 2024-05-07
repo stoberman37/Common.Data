@@ -40,7 +40,7 @@ jobs:
     - name: Set version
       run: |
         VERSION="${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{github.run_number}}"
-        if [[ "$BRANCH_NAME" -ne 'main' ]]
+        if [[ "$BRANCH_NAME" != "main" ]]
         then
           VERSION="${VERSION}-ci$(date +'%Y%m%dT%H%M%S')"
         fi
@@ -58,11 +58,12 @@ jobs:
 
     - name: Pack
       run: |
-       find ./src -name "@.csproj" -exec dotnet pack --configuration Release --no-build --output ./nuget {} \;
+        mkdir ./nuget
+        find ./src -name "@.csproj" -exec dotnet pack --configuration Release --no-build --output ./nuget {} \;
 
     - name: test
       run: |
-       ls -al ./nuget
+        ls -al ./nuget
 
     # - name: Pack
     #   working-directory: ${{env.PROJECT_FOLDER}}
