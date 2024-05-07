@@ -59,7 +59,7 @@ jobs:
     - name: Pack
       run: |
         mkdir ./nuget
-        find ./src -name "@.csproj" -exec dotnet pack --configuration Release --no-build --output ./nuget {} \;
+        find ./src -name "*.csproj" -exec dotnet pack --configuration Release --no-build --output ./nuget {} \;
 
     - name: test
       run: |
