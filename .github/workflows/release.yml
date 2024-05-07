@@ -1,12 +1,11 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Publish
+name: .NET
 
 on:
   release:
     types: [published]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -18,6 +17,11 @@ jobs:
       MAJOR_VERSION: 0
       MINOR_VERSION: 1
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+#       project: MaximGorbatyuk.DatabaseSqlEndpoints
+#       PROJECT_FOLDER: ./MaximGorbatyuk.DatabaseSqlEndpoints
+#       PROJECT_FILE: MaximGorbatyuk.DatabaseSqlEndpoints/MaximGorbatyuk.DatabaseSqlEndpoints.csproj
+#       NUGET_PKG_LINK: https://nuget.pkg.github.com/maximgorbatyuk/index.json
+
 
     steps:
     - name: Checkout
@@ -31,12 +35,12 @@ jobs:
     - name: Set version
       run: |
         VERSION="${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{github.run_number}}"
-        if [[ "$BRANCH_NAME" != "main" ]]
+        if [[ $BRANCH_NAME -ne 'main' ]]
         then
           VERSION="${VERSION}-ci$(date +'%Y%m%dT%H%M%S')"
         fi
         echo "Buid version is $VERSION"
-        find ./src -name "*.csproj" -exec sed -i "s/<Version>[0-9]\+\.[0-9]\+\.[0-9]\+/<Version>$VERSION/g" {} \;
+        find . -name "*.csproj" -exec sed -i "s/<Version>[0-9]\+\.[0-9]\+\.[0-9]\+/<Version>$VERSION/g" {} +
 
     - name: Restore dependencies
       run: dotnet restore
@@ -49,12 +53,62 @@ jobs:
 
     - name: Pack
       run: |
-        mkdir ./nuget
-        find ./src -name "*.csproj" -exec dotnet pack --configuration Release --no-build --output ./nuget {} \;
+       find ./src -name "@.csproj" -exec dotnet pack --configuration Release --no-build --output ./nuget
 
-    - name: Publish NuGet packages
-      uses: dansiegel/publish-nuget@v1.2
-      with:
-        filename: './nuget/*.nupkg'
-        apiKey: ${{ secrets.NUGET_API_KEY }}
-        feedUrl: 'https://api.nuget.org/v3/index.json'
+    - name: test
+      run: |
+       ls -al ./nuget
+
+#     - name: Publish nuget package
+#       uses: brandedoutcast/publish-nuget@v2.5.2
+#       with:
+#           PROJECT_FILE_PATH: ${{env.PROJECT_FILE}}
+#           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+
+
+# name: Publish nuget
+
+# on:
+#   push:
+#     branches: [main]
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 15
+#     env:
+#       project: MaximGorbatyuk.DatabaseSqlEndpoints
+#       PROJECT_FOLDER: ./MaximGorbatyuk.DatabaseSqlEndpoints
+#       PROJECT_FILE: MaximGorbatyuk.DatabaseSqlEndpoints/MaximGorbatyuk.DatabaseSqlEndpoints.csproj
+#       NUGET_PKG_LINK: https://nuget.pkg.github.com/maximgorbatyuk/index.json
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v2
+
+#     - name: Setup .NET Core
+#       uses: actions/setup-dotnet@v1
+#       with:
+#         dotnet-version: "6.0.x"
+
+#     - name: Set version
+#       run: |
+#        echo "Buid version is ${{github.run_number}}"
+#        sed -i "s/\(<Version>\([0-9]\+\.\)\{2\}\)\([0-9]\+\)/\1${{github.run_number}}/" ${{env.PROJECT_FILE}}
+
+#     - name: Build
+#       working-directory: ${{env.PROJECT_FOLDER}}
+#       run: dotnet build --configuration Release
+
+#     - name: Test
+#       working-directory: ${{env.PROJECT_FOLDER}}
+#       run: dotnet test --configuration Release --no-build
+
+#     - name: Pack
+#       working-directory: ${{env.PROJECT_FOLDER}}
+#       run: dotnet pack --configuration Release --no-build --output .
+
+#     - name: Publish nuget package
+#       uses: brandedoutcast/publish-nuget@v2.5.2
+#       with:
+#           PROJECT_FILE_PATH: ${{env.PROJECT_FILE}}
+#           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+        

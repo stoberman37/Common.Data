@@ -21,6 +21,7 @@ jobs:
     env:
       MAJOR_VERSION: 0
       MINOR_VERSION: 1
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 #       project: MaximGorbatyuk.DatabaseSqlEndpoints
 #       PROJECT_FOLDER: ./MaximGorbatyuk.DatabaseSqlEndpoints
 #       PROJECT_FILE: MaximGorbatyuk.DatabaseSqlEndpoints/MaximGorbatyuk.DatabaseSqlEndpoints.csproj
@@ -38,8 +39,13 @@ jobs:
 
     - name: Set version
       run: |
-       echo "Buid version is ${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{github.run_number}}"
-       find . -name "*.csproj" -exec sed -i "s/<Version>[0-9]\+\.[0-9]\+\.[0-9]\+/<Version>${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{github.run_number}}/g" {} +
+        VERSION="${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{github.run_number}}"
+        if [[ $BRANCH_NAME -ne 'main' ]]
+        then
+          VERSION="${VERSION}-ci$(date +'%Y%m%dT%H%M%S')"
+        fi
+        echo "Buid version is $VERSION"
+        find . -name "*.csproj" -exec sed -i "s/<Version>[0-9]\+\.[0-9]\+\.[0-9]\+/<Version>$VERSION/g" {} +
 
     - name: Restore dependencies
       run: dotnet restore
@@ -51,8 +57,17 @@ jobs:
       run: dotnet test --no-build --configuration Release --verbosity normal
 
     - name: Pack
-      working-directory: ${{env.PROJECT_FOLDER}}
-      run: dotnet pack --configuration Release --no-build --output .
+      run: |
+       find ./src -name "@.csproj" -exec dotnet pack --configuration Release --no-build --output ./nuget
+
+    - name: test
+      run: |
+       ls -al ./nuget
+
+    # - name: Pack
+    #   working-directory: ${{env.PROJECT_FOLDER}}
+    #   run: |
+    #     dotnet pack --configuration Release --no-build --output .
 
 #     - name: Publish nuget package
 #       uses: brandedoutcast/publish-nuget@v2.5.2
