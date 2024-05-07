@@ -40,7 +40,7 @@ jobs:
     - name: Set version
       run: |
         VERSION="${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{github.run_number}}"
-        if [[ $BRANCH_NAME -ne 'main' ]]
+        if [[ "$BRANCH_NAME" -ne 'main' ]]
         then
           VERSION="${VERSION}-ci$(date +'%Y%m%dT%H%M%S')"
         fi
