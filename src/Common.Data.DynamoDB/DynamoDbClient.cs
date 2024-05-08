@@ -49,7 +49,7 @@ namespace Common.Data.DynamoDB
 			return _dynamoDbContext.LoadAsync<T>(toRead);
 		}
 
-		public Task BatchWriteAsync(IEnumerable<T> toSave)
+		public Task UpdateAsync(IEnumerable<T> toSave)
 		{
 			var batch = _dynamoDbContext.CreateBatchWrite<T>();
 			batch.AddPutItems(toSave);
