@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Common.Data.DynamoDB
@@ -46,6 +47,13 @@ namespace Common.Data.DynamoDB
 		{
 			if (toRead == null || toRead.Equals(default(TKey))) throw new ArgumentNullException(nameof(toRead));
 			return _dynamoDbContext.LoadAsync<T>(toRead);
+		}
+
+		public Task BatchWriteAsync(IEnumerable<T> toSave)
+		{
+			var batch = _dynamoDbContext.CreateBatchWrite<T>();
+			batch.AddPutItems(toSave);
+			return _retryStrategy.RetryAsync(() => batch.ExecuteAsync());
 		}
 
 		protected virtual void Dispose(bool disposing)
