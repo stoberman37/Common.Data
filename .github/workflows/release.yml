@@ -1,15 +1,11 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Build
+name: Publish
 
 on:
-  push:
-    branches: 
-      - main
-      - feature/*
-  pull_request:
-    branches: [ "main" ]
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -50,3 +46,15 @@ jobs:
 
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
+
+    - name: Pack
+      run: |
+        mkdir ./nuget
+        find ./src -name "*.csproj" -exec dotnet pack --configuration Release --no-build --output ./nuget {} \;
+
+    - name: Publish NuGet packages
+      uses: dansiegel/publish-nuget@v1.2
+      with:
+        filename: './nuget/*.nupkg'
+        apiKey: ${{ secrets.NUGET_API_KEY }}
+        feedUrl: 'https://api.nuget.org/v3/index.json'
