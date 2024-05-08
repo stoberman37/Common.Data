@@ -22,11 +22,6 @@ jobs:
       MAJOR_VERSION: 0
       MINOR_VERSION: 1
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
-#       project: MaximGorbatyuk.DatabaseSqlEndpoints
-#       PROJECT_FOLDER: ./MaximGorbatyuk.DatabaseSqlEndpoints
-#       PROJECT_FILE: MaximGorbatyuk.DatabaseSqlEndpoints/MaximGorbatyuk.DatabaseSqlEndpoints.csproj
-#       NUGET_PKG_LINK: https://nuget.pkg.github.com/maximgorbatyuk/index.json
-
 
     steps:
     - name: Checkout
