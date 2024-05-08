@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model.Internal.MarshallTransformations;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -93,7 +95,7 @@ namespace Common.Data.DynamoDB.UnitTests
 			var client = new DynamoDBClient<object, object>(DbContextFactory);
 
 			// Act
-			var a = () => client.UpdateAsync(null);
+			var a = () => client.UpdateAsync(null as object);
 
 			// Assert
 			await a.Should()
@@ -117,6 +119,43 @@ namespace Common.Data.DynamoDB.UnitTests
 			// Assert
 			context.Verify(c => c.SaveAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()), Times.Once);
 		}
+
+		[Fact]
+		public async Task UpdateAsync_List_NullParameterTest()
+		{
+			// Arrange
+			static IDynamoDBContext DbContextFactory() => new Mock<IDynamoDBContext>().Object;
+			var client = new DynamoDBClient<object, object>(DbContextFactory);
+
+			// Act
+			var a = () => client.UpdateAsync(null);
+
+			// Assert
+			await a.Should()
+				.ThrowAsync<ArgumentNullException>()
+				.WithParameterName("toSave");
+		}
+
+		// @TODO: figure out how to mock a BatchWrite condition
+		//[Fact]
+		//public async Task UpdateAsync_List_SuccessTest()
+		//{
+		//	// Arrange
+		//	var context = new Mock<IDynamoDBContext>();
+		//	context.Setup(c => c.CreateBatchWrite(It.IsAny<DynamoDBOperationConfig>())).Returns(() =>
+		//	{
+		//		return new BatchWrite<object>(context, null);
+		//	});
+		//	var o = new List<object> { 1, 2, 3 };
+		//	IDynamoDBContext DbContextFactory() => context.Object;
+		//	var client = new DynamoDBClient<object, object>(DbContextFactory);
+
+		//	// Act
+		//	await client.UpdateAsync(o);
+
+		//	// Assert
+		//	context.Verify(c => c.SaveAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()), Times.Once);
+		//}
 
 		[Fact]
 		public async Task DeleteAsync_NullParameterTest()

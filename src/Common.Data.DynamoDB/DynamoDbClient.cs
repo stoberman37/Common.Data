@@ -1,6 +1,7 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Common.Data.DynamoDB
@@ -27,8 +28,14 @@ namespace Common.Data.DynamoDB
 
 		public Task CreateAsync(T toSave)
 		{
-			if (toSave == default(T))  throw new ArgumentNullException(nameof(toSave));
+			if (toSave == default(T)) throw new ArgumentNullException(nameof(toSave));
 			return _retryStrategy.RetryAsync(() => _dynamoDbContext.SaveAsync(toSave));
+		}
+
+		public Task CreateAsync(T toSave, CancellationToken cancellationToken)
+		{
+			if (toSave == default(T)) throw new ArgumentNullException(nameof(toSave));
+			return _retryStrategy.RetryAsync(() => _dynamoDbContext.SaveAsync(toSave, cancellationToken), cancellationToken);
 		}
 
 		public Task UpdateAsync(T toSave)
@@ -37,23 +44,50 @@ namespace Common.Data.DynamoDB
 			return _retryStrategy.RetryAsync(() => _dynamoDbContext.SaveAsync(toSave));
 		}
 
+		public Task UpdateAsync(T toSave, CancellationToken cancellationToken)
+		{
+			if (toSave == default(T)) throw new ArgumentNullException(nameof(toSave));
+			return _retryStrategy.RetryAsync(() => _dynamoDbContext.SaveAsync(toSave, cancellationToken), cancellationToken);
+		}
+
 		public Task DeleteAsync(T toDelete)
 		{
 			if (toDelete == default(T)) throw new ArgumentNullException(nameof(toDelete));
 			return _retryStrategy.RetryAsync(() => _dynamoDbContext.DeleteAsync(toDelete));
 		}
 
+		public Task DeleteAsync(T toDelete, CancellationToken cancellationToken)
+		{
+			if (toDelete == default(T)) throw new ArgumentNullException(nameof(toDelete));
+			return _retryStrategy.RetryAsync(() => _dynamoDbContext.DeleteAsync(toDelete, cancellationToken), cancellationToken);
+		}
+
 		public Task<T> ReadAsync(TKey toRead)
 		{
 			if (toRead == null || toRead.Equals(default(TKey))) throw new ArgumentNullException(nameof(toRead));
-			return _dynamoDbContext.LoadAsync<T>(toRead);
+			return _retryStrategy.RetryAsync(() => _dynamoDbContext.LoadAsync<T>(toRead));
+		}
+
+		public Task<T> ReadAsync(TKey toRead, CancellationToken cancellationToken)
+		{
+			if (toRead == null || toRead.Equals(default(TKey))) throw new ArgumentNullException(nameof(toRead));
+			return _retryStrategy.RetryAsync(() => _dynamoDbContext.LoadAsync<T>(toRead, cancellationToken), cancellationToken);
 		}
 
 		public Task UpdateAsync(IEnumerable<T> toSave)
 		{
+			if (toSave == null) throw new ArgumentNullException(nameof(toSave));
 			var batch = _dynamoDbContext.CreateBatchWrite<T>();
 			batch.AddPutItems(toSave);
 			return _retryStrategy.RetryAsync(() => batch.ExecuteAsync());
+		}
+
+		public Task UpdateAsync(IEnumerable<T> toSave, CancellationToken cancellationToken)
+		{
+			if (toSave == null) throw new ArgumentNullException(nameof(toSave));
+			var batch = _dynamoDbContext.CreateBatchWrite<T>();
+			batch.AddPutItems(toSave);
+			return _retryStrategy.RetryAsync(() => batch.ExecuteAsync(cancellationToken), cancellationToken);
 		}
 
 		protected virtual void Dispose(bool disposing)
