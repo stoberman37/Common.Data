@@ -35,4 +35,7 @@
     </PackageReference>
   </ItemGroup>
 
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>

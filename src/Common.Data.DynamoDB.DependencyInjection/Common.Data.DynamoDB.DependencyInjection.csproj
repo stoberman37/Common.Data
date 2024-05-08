@@ -37,4 +37,7 @@
     <ProjectReference Include="..\Common.Data.DynamoDB\Common.Data.DynamoDB.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>

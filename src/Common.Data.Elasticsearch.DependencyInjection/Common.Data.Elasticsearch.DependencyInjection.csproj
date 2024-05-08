@@ -37,4 +37,7 @@
 		<ProjectReference Include="..\Common.Data.Elasticsearch\Common.Data.Elasticsearch.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>
